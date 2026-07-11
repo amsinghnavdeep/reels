@@ -68,8 +68,8 @@ def tts_mms(text, lang, output_wav):
 def tts_xtts(text, clone_wav, lang, output_wav):
     try:
         from TTS.api import TTS
-    except ImportError:
-        print("[!] Run: pip install TTS")
+    except Exception as e:
+        print(f"[!] Could not import TTS ({type(e).__name__}: {e}). Install with: pip install coqui-tts")
         sys.exit(1)
     import torch
     tts_model = TTS("tts_models/multilingual/multi-dataset/xtts_v2", gpu=torch.cuda.is_available())
