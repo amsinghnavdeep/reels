@@ -1,0 +1,14 @@
+engines/
+output/
+results/
+__pycache__/
+*.pyc
+*.pyo
+.env
+venv/
+*.egg-info/
+.DS_Store
+*.mp4
+*.webm
+*.wav
+!examples/*.wav
