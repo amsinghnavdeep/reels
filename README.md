@@ -1,6 +1,8 @@
 # Reels — Free Talking-Avatar Generator
 
-Turn a **script + one photo** into a vertical (9:16) talking-avatar reel. 100% free,
+Turn a **script + a short real talking-head video** (or a single photo) into a vertical
+(9:16) talking-avatar reel. Driving with real footage keeps the mouth sharp and the head
+moving naturally — a still photo can only give a "talking photo" look. 100% free,
 open-source engines. Designed to run on a **free GPU** (Google Colab / Kaggle) for
 testing and personal reels.
 
