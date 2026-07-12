@@ -1,6 +1,9 @@
 engines/
 output/
 results/
+reels_state/
+worker/node_modules/
+worker/.wrangler/
 __pycache__/
 *.pyc
 *.pyo

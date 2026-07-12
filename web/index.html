@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Reels — Control Panel</title>
+<link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+<header>
+  <h1>🎬 Reels Control Panel</h1>
+  <div class="conn">
+    <input id="api" placeholder="Worker API URL (https://reels-api.<you>.workers.dev)" />
+    <input id="key" type="password" placeholder="Dashboard key" />
+    <button id="save-conn">Connect</button>
+    <span id="runner" class="badge">runner: unknown</span>
+  </div>
+</header>
+
+<main>
+  <section class="card">
+    <h2>1 · Assets</h2>
+    <label>Driving video (talking-head, ~10–30s)
+      <input type="file" id="video" accept="video/*" />
+    </label>
+    <label>Voice sample (8–60s)
+      <input type="file" id="voice" accept="audio/*" />
+    </label>
+    <div class="row">
+      <label>Trim (optional) <input id="trim" placeholder="-ss 0 -to 20" /></label>
+      <label>Crop (optional) <input id="crop" placeholder="crop=360:360:0:48" /></label>
+      <label>Language <input id="lang" value="hi" /></label>
+    </div>
+    <button id="upload-assets">Upload assets</button>
+    <p class="hint" id="assets-state"></p>
+  </section>
+
+  <section class="card">
+    <h2>2 · Script</h2>
+    <textarea id="script" rows="6" placeholder="Write the reel script here, or auto-generate below…"></textarea>
+    <div class="row">
+      <label>Auto-topic <input id="topic" placeholder="daily astrology tip" /></label>
+      <label>LLM
+        <select id="provider"><option value="groq">Groq (free)</option><option value="gemini">Gemini (free)</option></select>
+      </label>
+      <label>LLM key <input id="llmkey" type="password" placeholder="only if auto-generating" /></label>
+    </div>
+    <button id="gen-script">Auto-generate script</button>
+    <label class="chk"><input type="checkbox" id="captions" checked /> Burn captions</label>
+  </section>
+
+  <section class="card">
+    <h2>3 · Instagram <span class="muted">(optional)</span></h2>
+    <div class="row">
+      <label>Username <input id="ig-user" autocomplete="off" /></label>
+      <label>Password <input id="ig-pass" type="password" autocomplete="new-password" /></label>
+    </div>
+    <label>Caption <input id="ig-caption" placeholder="#reels #astrology" /></label>
+    <label class="chk"><input type="checkbox" id="ig-post" /> Auto-post after render (unofficial API — account risk)</label>
+    <button id="save-ig">Save Instagram login</button>
+  </section>
+
+  <section class="card">
+    <h2>4 · Schedule &amp; Run</h2>
+    <div class="row">
+      <label>Daily time (UTC) <input id="sched" type="time" value="03:00" /></label>
+      <label class="chk"><input type="checkbox" id="sched-on" /> Enable daily</label>
+    </div>
+    <button id="save-cfg" class="primary">Save config</button>
+    <button id="run-now" class="primary">▶ Generate now</button>
+    <p class="hint" id="run-state"></p>
+  </section>
+
+  <section class="card">
+    <h2>5 · Outputs</h2>
+    <button id="refresh">Refresh</button>
+    <div id="gallery" class="gallery"></div>
+  </section>
+</main>
+
+<script src="./app.js"></script>
+</body>
+</html>

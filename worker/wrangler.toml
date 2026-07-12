@@ -1,0 +1,23 @@
+name = "reels-api"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+
+# Daily scheduler (checks every 15 min; queues a job when the saved time matches).
+[triggers]
+crons = ["*/15 * * * *"]
+
+# KV holds config + job + Instagram creds + runner heartbeat.
+# Create it once:  wrangler kv namespace create STATE   → paste the id below.
+[[kv_namespaces]]
+binding = "STATE"
+id = "REPLACE_WITH_KV_ID"
+
+# R2 holds uploaded assets + finished reels.
+# Create it once:  wrangler r2 bucket create reels-media
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "reels-media"
+
+# Secrets (do NOT put values here):
+#   wrangler secret put DASH_KEY      # the dashboard password you type in the UI
+#   wrangler secret put RUNNER_KEY    # a long random token the GPU runner uses

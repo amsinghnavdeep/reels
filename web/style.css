@@ -1,0 +1,27 @@
+:root { --bg:#0e0f13; --card:#181a20; --line:#2a2d36; --fg:#e8e9ee; --mut:#9aa0ad; --acc:#6d8bff; }
+* { box-sizing: border-box; }
+body { margin:0; font:15px/1.5 system-ui,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--fg); }
+header { padding:18px 22px; border-bottom:1px solid var(--line); position:sticky; top:0; background:var(--bg); z-index:5; }
+header h1 { margin:0 0 10px; font-size:20px; }
+.conn { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.conn input { flex:1; min-width:180px; }
+main { max-width:820px; margin:0 auto; padding:22px; display:grid; gap:18px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px; }
+.card h2 { margin:0 0 14px; font-size:16px; }
+label { display:block; margin:10px 0; color:var(--mut); font-size:13px; }
+label.chk { display:flex; align-items:center; gap:8px; color:var(--fg); }
+input, textarea, select { width:100%; margin-top:5px; padding:9px 11px; background:#11131a; color:var(--fg);
+  border:1px solid var(--line); border-radius:8px; font:inherit; }
+label.chk input { width:auto; margin:0; }
+.row { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; }
+button { margin-top:12px; padding:9px 16px; border:1px solid var(--line); border-radius:8px; background:#20232c;
+  color:var(--fg); cursor:pointer; font:inherit; }
+button:hover { border-color:var(--acc); }
+button.primary { background:var(--acc); border-color:var(--acc); color:#fff; font-weight:600; }
+.badge { margin-left:auto; padding:4px 10px; border-radius:20px; background:#20232c; font-size:12px; color:var(--mut); }
+.badge.on { color:#7ee787; } .badge.off { color:#ff7b72; }
+.hint { color:var(--mut); font-size:13px; min-height:18px; }
+.muted { color:var(--mut); font-weight:400; font-size:13px; }
+.gallery { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px; margin-top:12px; }
+.gallery video { width:100%; border-radius:8px; border:1px solid var(--line); background:#000; }
+.gallery a { color:var(--acc); font-size:12px; display:block; margin-top:4px; text-align:center; }
