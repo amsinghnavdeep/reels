@@ -1,12 +1,16 @@
 # Deploy the Reels dashboard (Cloudflare)
 
-The **UI + API** run free on Cloudflare. The **GPU rendering** runs free on
+The **UI + API** run free on a single Cloudflare Worker (the Worker serves the
+`web/` files as static assets *and* the API). The **GPU rendering** runs free on
 Colab/Kaggle (`runner.py`) and talks to the API. You control everything from the UI.
 
 ```
- Cloudflare Pages (UI)  ──►  Cloudflare Worker + KV + R2  ◄──  Colab/Kaggle GPU (runner.py)
-   web/                        worker/                          runner.py + pipeline.py
+ Cloudflare Worker (UI + API) + KV + R2  ◄──  Colab/Kaggle GPU (runner.py)
+   web/ + worker/                              runner.py + pipeline.py
 ```
+
+Token needs: **Workers Scripts: Edit**, **Workers KV Storage: Edit**,
+**Workers R2 Storage: Edit**. R2 must be enabled on the account once (free tier).
 
 ## 0. Prereqs
 ```bash
@@ -27,17 +31,12 @@ wrangler secret put DASH_KEY     # the password you'll type into the dashboard
 wrangler secret put RUNNER_KEY   # a long random token for the GPU runner (e.g. `openssl rand -hex 24`)
 ```
 
-## 3. Deploy the API
+## 3. Deploy (UI + API together)
 ```bash
 wrangler deploy          # prints https://reels-api.<your-subdomain>.workers.dev
 ```
-
-## 4. Deploy the UI
-```bash
-cd ../web
-wrangler pages deploy . --project-name reels-dashboard
-```
-Open the Pages URL, paste your **Worker API URL** + **DASH_KEY**, click **Connect**.
+Open that URL — it serves the dashboard. Paste your **DASH_KEY**, click **Connect**
+(the API URL is pre-filled to the same origin).
 
 ## 5. Start the GPU runner
 In the Colab/Kaggle notebook, run cells 1–4 (env + weights) once, then the last

@@ -1,7 +1,8 @@
 // Reels dashboard — talks to the Cloudflare Worker API. All state lives server-side
 // (KV) except the API URL + dashboard key, which we keep in localStorage for convenience.
 const $ = (id) => document.getElementById(id);
-let API = localStorage.getItem("reels_api") || "";
+// UI is served from the same Worker that hosts the API, so default to this origin.
+let API = localStorage.getItem("reels_api") || window.location.origin;
 let KEY = localStorage.getItem("reels_key") || "";
 $("api").value = API;
 $("key").value = KEY;
