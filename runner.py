@@ -32,28 +32,39 @@ def _get_json(path):
     return json.loads(_req(path).read())
 
 
-def download(key, dst):
-    with _req("/file/" + key) as r, open(dst, "wb") as f:
-        f.write(r.read())
+def fetch_url(url, dst):
+    """Download a public direct-download URL to dst (used when the dashboard supplies
+    a video/voice URL instead of relying on the local files on this box)."""
+    urllib.request.urlretrieve(url, dst)
     return dst
 
 
-def report(status, message, reel=None):
-    headers = {"x-job-status": status, "x-job-message": message[:300]}
-    body = None
-    if reel and os.path.exists(reel):
-        headers["x-reel-name"] = os.path.basename(reel)
-        headers["content-type"] = "video/mp4"
-        body = open(reel, "rb").read()
-    _req("/result", method="POST", data=body or b"", headers=headers)
+def report(status, message):
+    _req("/result", method="POST", data=b"",
+         headers={"x-job-status": status, "x-job-message": (message or "")[:300]})
+
+
+def _local(prefix):
+    """Find a local asset uploaded on this box (reels_state/<prefix>.*)."""
+    import glob
+    hits = sorted(glob.glob(os.path.join(pipeline.STATE, prefix + ".*")))
+    return hits[0] if hits else None
 
 
 def run_job(cfg):
-    import json
     os.makedirs(pipeline.STATE, exist_ok=True)
-    ext = os.path.splitext(cfg.get("voice", "voice.m4a"))[1] or ".m4a"
-    video = download("assets/video.mp4", os.path.join(pipeline.STATE, "video.mp4"))
-    voice = download(cfg["voice"], os.path.join(pipeline.STATE, "voice" + ext))
+    # video/voice: prefer a URL from the dashboard, else the file uploaded on this box.
+    if cfg.get("video_url"):
+        video = fetch_url(cfg["video_url"], os.path.join(pipeline.STATE, "video.mp4"))
+    else:
+        video = _local("video")
+    if cfg.get("voice_url"):
+        ext = os.path.splitext(cfg["voice_url"])[1] or ".m4a"
+        voice = fetch_url(cfg["voice_url"], os.path.join(pipeline.STATE, "voice" + ext))
+    else:
+        voice = _local("voice")
+    if not video or not voice:
+        raise RuntimeError("no driving video/voice — upload them on this box or paste URLs in the dashboard")
     script = (cfg.get("script") or "").strip()
     if not script:
         raise RuntimeError("no script set in the dashboard")
@@ -77,8 +88,8 @@ def poll_once():
     print("picked up job", job["id"])
     try:
         reel, msg = run_job(data["config"])
-        report("done", msg, reel)
-        print("uploaded reel:", reel)
+        report("done", (msg or "rendered") + f" · {os.path.basename(reel)}")
+        print("reel ready (local):", reel)
     except Exception as e:
         print("job failed:", e)
         report("error", str(e))

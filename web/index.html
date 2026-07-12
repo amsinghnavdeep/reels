@@ -19,20 +19,17 @@
 
 <main>
   <section class="card">
-    <h2>1 · Assets</h2>
-    <label>Driving video (talking-head, ~10–30s)
-      <input type="file" id="video" accept="video/*" />
-    </label>
-    <label>Voice sample (8–60s)
-      <input type="file" id="voice" accept="audio/*" />
-    </label>
+    <h2>1 · Source</h2>
+    <p class="hint">No files are stored in the cloud. Either upload the driving video + voice
+      once on the GPU box (notebook), or paste public direct-download URLs here and the runner
+      fetches them at render time.</p>
+    <label>Driving video URL (optional) <input id="video-url" placeholder="https://…/clip.mp4" /></label>
+    <label>Voice sample URL (optional) <input id="voice-url" placeholder="https://…/voice.m4a" /></label>
     <div class="row">
       <label>Trim (optional) <input id="trim" placeholder="-ss 0 -to 20" /></label>
       <label>Crop (optional) <input id="crop" placeholder="crop=360:360:0:48" /></label>
       <label>Language <input id="lang" value="hi" /></label>
     </div>
-    <button id="upload-assets">Upload assets</button>
-    <p class="hint" id="assets-state"></p>
   </section>
 
   <section class="card">
@@ -72,9 +69,11 @@
   </section>
 
   <section class="card">
-    <h2>5 · Outputs</h2>
-    <button id="refresh">Refresh</button>
-    <div id="gallery" class="gallery"></div>
+    <h2>5 · Last run</h2>
+    <p class="hint">The finished reel is auto-posted to Instagram (if enabled) and shown for
+      download in the notebook — nothing is stored here.</p>
+    <button id="refresh">Refresh status</button>
+    <p class="hint" id="last-run"></p>
   </section>
 </main>
 

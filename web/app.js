@@ -40,7 +40,11 @@ async function refreshStatus() {
     const b = $("runner");
     b.textContent = "runner: " + (alive ? "online" : "offline") + (s.state ? " · " + s.state : "");
     b.className = "badge " + (alive ? "on" : "off");
-    if (s.state) toast("run-state", "status: " + s.state + (s.message ? " — " + s.message : ""));
+    if (s.state) {
+      const line = "status: " + s.state + (s.message ? " — " + s.message : "");
+      toast("run-state", line);
+      toast("last-run", line);
+    }
   } catch (e) { /* not connected yet */ }
 }
 setInterval(refreshStatus, 10000);
@@ -52,6 +56,8 @@ async function loadConfig() {
     $("script").value = c.script || "";
     $("topic").value = c.topic || "";
     $("provider").value = c.provider || "groq";
+    $("video-url").value = c.video_url || "";
+    $("voice-url").value = c.voice_url || "";
     $("trim").value = c.trim || "";
     $("crop").value = c.crop || "";
     $("lang").value = c.lang || "hi";
@@ -61,14 +67,15 @@ async function loadConfig() {
     $("ig-user").value = c.ig_user || "";
     $("ig-caption").value = c.ig_caption || "";
     $("ig-post").checked = !!c.ig_post;
-    toast("assets-state", c.video ? "assets on file ✓" : "no assets uploaded yet");
   } catch (e) { toast("run-state", e.message, false); }
 }
 
 function cfgFromForm() {
   return {
     script: $("script").value, topic: $("topic").value, provider: $("provider").value,
-    llmkey: $("llmkey").value || undefined, trim: $("trim").value, crop: $("crop").value,
+    llmkey: $("llmkey").value || undefined,
+    video_url: $("video-url").value, voice_url: $("voice-url").value,
+    trim: $("trim").value, crop: $("crop").value,
     lang: $("lang").value, captions: $("captions").checked,
     schedule: $("sched").value, schedule_on: $("sched-on").checked,
     ig_caption: $("ig-caption").value, ig_post: $("ig-post").checked,
@@ -78,19 +85,6 @@ function cfgFromForm() {
 $("save-cfg").onclick = async () => {
   try { await api("/config", { method: "POST", body: JSON.stringify(cfgFromForm()) }); toast("run-state", "config saved ✓"); }
   catch (e) { toast("run-state", e.message, false); }
-};
-
-// ---- assets upload (multipart to the Worker → R2) ----------------------------
-$("upload-assets").onclick = async () => {
-  try {
-    const fd = new FormData();
-    if ($("video").files[0]) fd.append("video", $("video").files[0]);
-    if ($("voice").files[0]) fd.append("voice", $("voice").files[0]);
-    if (![...fd.keys()].length) return toast("assets-state", "pick a video and/or voice first", false);
-    toast("assets-state", "uploading…");
-    await api("/assets", { method: "POST", body: fd });
-    toast("assets-state", "assets uploaded ✓");
-  } catch (e) { toast("assets-state", e.message, false); }
 };
 
 // ---- Instagram creds (stored server-side; write-only from UI) -----------------
@@ -123,21 +117,7 @@ $("run-now").onclick = async () => {
   } catch (e) { toast("run-state", e.message, false); }
 };
 
-// ---- outputs gallery ---------------------------------------------------------
-async function refreshGallery() {
-  try {
-    const list = await api("/reels");
-    const g = $("gallery");
-    g.innerHTML = "";
-    (list.reels || []).forEach((r) => {
-      const d = document.createElement("div");
-      d.innerHTML = `<video src="${r.url}" controls preload="metadata"></video>` +
-                    `<a href="${r.url}" download>${r.name}</a>`;
-      g.appendChild(d);
-    });
-    if (!(list.reels || []).length) g.innerHTML = '<p class="hint">no reels yet</p>';
-  } catch (e) { toast("run-state", e.message, false); }
-}
-$("refresh").onclick = refreshGallery;
+// ---- last-run status ---------------------------------------------------------
+$("refresh").onclick = refreshStatus;
 
-if (API) { loadConfig(); refreshStatus(); refreshGallery(); }
+if (API) { loadConfig(); refreshStatus(); }

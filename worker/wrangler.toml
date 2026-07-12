@@ -11,17 +11,13 @@ directory = "../web"
 [triggers]
 crons = ["*/15 * * * *"]
 
-# KV holds config + job + Instagram creds + runner heartbeat.
+# KV holds ALL state (text only): config + job + Instagram creds + runner heartbeat.
+# No file storage — the driving video + voice live on the GPU box (or a pasted URL)
+# and the finished reel is posted to Instagram / downloaded from the notebook.
 # Create it once:  wrangler kv namespace create STATE   → paste the id below.
 [[kv_namespaces]]
 binding = "STATE"
 id = "7ba7656e51434760888145d2409ea862"
-
-# R2 holds uploaded assets + finished reels.
-# Create it once:  wrangler r2 bucket create reels-media
-[[r2_buckets]]
-binding = "BUCKET"
-bucket_name = "reels-media"
 
 # Secrets (do NOT put values here):
 #   wrangler secret put DASH_KEY      # the dashboard password you type in the UI
